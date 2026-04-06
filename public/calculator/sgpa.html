@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SGPA Calculator</title>
+  <meta name="description"
+    content="Calculate your Semester GPA by entering subject grades and credits. Optionally compute your updated CGPA on the same page." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── CGPA panel ── */
+    #cgpaPanel {
+      display: none;
+      margin-top: 2.5rem;
+      animation: slideIn 0.45s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #cgpaResultBox {
+      display: none;
+      text-align: center;
+      margin-top: 1.5rem;
+      padding: 1.8rem 1rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      animation: slideIn 0.4s ease;
+    }
+
+    #cgpaResultBox .label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.4rem;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+    }
+
+    /* subtle add-row animation */
+    #subjectList tr {
+      animation: rowFade 0.3s ease;
+    }
+
+    @keyframes rowFade {
+      from {
+        opacity: 0;
+        transform: translateX(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* ── share via email ── */
+    .share-section {
+      margin-top: 1.4rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border-soft);
+      text-align: left;
+    }
+
+    .share-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.6rem;
+    }
+
+    .share-row {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .share-row input {
+      flex: 1;
+      min-width: 150px;
+      font-size: 0.82rem;
+    }
+
+    .mail-btn {
+      background: linear-gradient(135deg, #55879c, #3a6a80) !important;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+      font-size: 0.82rem !important;
+      padding: 0.55rem 1.1rem !important;
+    }
+
+    .mail-btn:hover {
+      background: linear-gradient(135deg, #3a6a80, #2b5060) !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <header style="text-align:center; margin-bottom:2.5rem;">
+      <h1>SGPA Calculator</h1>
+      <p>
+        Add your subjects, credits, and grades below. Pass&nbsp;(P) credits count
+        toward your total but do not affect SGPA.
+      </p>
+    </header>
+
+    <!-- ADD SUBJECT CARD -->
+    <section class="card">
+      <h2>Add Subject</h2>
+      <div class="form">
+        <input type="text" id="subject" placeholder="Subject Name" autocomplete="off" />
+
+        <input type="number" id="credits" placeholder="Credits" min="1" step="1" />
+
+        <select id="grade">
+          <option value="">Grade</option>
+          <option value="S">S — 10</option>
+          <option value="A">A — 9</option>
+          <option value="B">B — 8</option>
+          <option value="C">C — 7</option>
+          <option value="D">D — 6</option>
+          <option value="E">E — 5</option>
+          <option value="F">F — 0</option>
+          <option value="P">P — Pass</option>
+        </select>
+
+        <button id="addBtn" onclick="addSubject()">+ Add</button>
+      </div>
+    </section>
+
+    <!-- TABLE + RESULT SIDE BY SIDE -->
+    <section class="data-layout">
+
+      <!-- SUBJECT TABLE -->
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Credits</th>
+              <th>Grade</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="subjectList">
+            <!-- Rows inserted by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SGPA RESULT CARD -->
+      <div class="result-card" id="sgpaCard">
+        <h2>SGPA</h2>
+        <span id="sgpa">0.00</span>
+        <p style="margin-top:1rem;">
+          Total Credits: <strong><span id="totalCredits">0</span></strong>
+        </p>
+
+        <!-- Share SGPA -->
+        <div class="share-section" id="sgpaShareSection" style="display:none;">
+          <p class="share-label">📧 Share SGPA</p>
+          <div class="share-row">
+            <input type="email" id="sgpaRecipientEmail"
+              placeholder="Recipient email (optional)" autocomplete="email" />
+            <button class="mail-btn" onclick="shareViaSGPAEmail()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+              </svg>
+              Send
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─────────── INLINE CGPA PANEL ─────────── -->
+    <div id="cgpaPanel">
+      <div class="divider">Also calculate your updated CGPA?</div>
+
+      <section class="card">
+        <h2>Calculate Updated CGPA</h2>
+        <p style="margin-bottom:1.2rem;">
+          Your SGPA for this semester has been computed above. Enter your previous
+          academic record to get your new cumulative GPA.
+        </p>
+
+        <div class="form">
+          <input type="number" id="prevCgpaInline" placeholder="Previous CGPA" min="0" max="10" step="0.01" />
+
+          <input type="number" id="prevCreditsInline" placeholder="Prev. Credits Completed" min="1" step="1" />
+
+          <input type="number" id="semCredits" placeholder="Credits This Semester" min="1" step="1" />
+
+          <button onclick="calculateCGPAFromSGPA()">Calculate CGPA</button>
+        </div>
+
+        <!-- CGPA RESULT -->
+        <div id="cgpaResultBox">
+          <p class="label">Your Updated CGPA</p>
+          <span id="cgpaResultInline" class="cgpa-value">0.00</span>
+
+          <!-- Share CGPA -->
+          <div class="share-section">
+            <p class="share-label">📧 Share CGPA Result</p>
+            <div class="share-row">
+              <input type="email" id="cgpaRecipientEmail"
+                placeholder="Recipient email (optional)" autocomplete="email" />
+              <button class="mail-btn" onclick="shareViaCGPAEmail()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+                </svg>
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- BACK TO HOME -->
+    <div style="text-align:center; margin-top:2.5rem;">
+      <a href="../calculator/landing.html" class="nav-btn">← Back to Home</a>
+    </div>
+
+  </div>
+
+  <script src="sgpa-script.js"></script>
+</body>
+
+</html>

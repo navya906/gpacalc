@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGPA Calculator</title>
+  <meta name="description"
+    content="Standalone CGPA calculator. Enter your current CGPA, credits completed, SGPA this semester, and semester credits to compute your updated CGPA." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* hero strip */
+    .hero-strip {
+      background: linear-gradient(135deg, #7a4e2d 0%, #a0673a 100%);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .hero-strip h1 {
+      color: #faf8f4;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-strip p {
+      color: rgba(250, 248, 244, 0.82);
+    }
+
+    /* input grid */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+
+    @media (max-width: 560px) {
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .field label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .field input {
+      width: 100%;
+    }
+
+    /* result box */
+    #resultBox {
+      display: none;
+      text-align: center;
+      margin-top: 2rem;
+      padding: 2.2rem 1rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.94);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .result-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.3rem;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-row button {
+      flex: 1;
+    }
+
+    .reset-btn {
+      background: transparent !important;
+      color: var(--brown-muted) !important;
+      border: 1.5px solid var(--border-light) !important;
+    }
+
+    .reset-btn:hover {
+      background: var(--border-soft) !important;
+      transform: none !important;
+    }
+
+    /* share via email */
+    .share-section {
+      margin-top: 1.8rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .share-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.7rem;
+    }
+
+    .share-row {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .share-row input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .mail-btn {
+      background: linear-gradient(135deg, #55879c, #3a6a80) !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .mail-btn:hover {
+      background: linear-gradient(135deg, #3a6a80, #2b5060) !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HERO -->
+    <div class="hero-strip">
+      <h1>CGPA Calculator</h1>
+      <p>
+        Enter your current academic standing and this semester's performance
+        to calculate your updated Cumulative GPA.
+      </p>
+    </div>
+
+    <!-- INPUT FORM -->
+    <section class="card">
+      <h2>Your Academic Details</h2>
+      <p style="margin-bottom:1.5rem;">
+        All four fields are required. Your CGPA will be computed using the
+        credit-weighted average formula.
+      </p>
+
+      <div class="input-grid">
+
+        <div class="field">
+          <label for="currentCgpa">Current CGPA</label>
+          <input type="number" id="currentCgpa" placeholder="e.g. 8.20" min="0" max="10" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="creditsDone">Credits Completed So Far</label>
+          <input type="number" id="creditsDone" placeholder="e.g. 120" min="1" step="1" />
+        </div>
+
+        <div class="field">
+          <label for="semSgpa">SGPA This Semester</label>
+          <input type="number" id="semSgpa" placeholder="e.g. 9.10" min="0" max="10" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="semCredits">Credits This Semester</label>
+          <input type="number" id="semCredits" placeholder="e.g. 24" min="1" step="1" />
+        </div>
+
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="btn-row">
+        <button onclick="calculateCGPA()">Calculate CGPA</button>
+        <button class="reset-btn" onclick="resetForm()">Reset</button>
+      </div>
+
+      <!-- RESULT -->
+      <div id="resultBox">
+        <p class="result-label">Your Updated CGPA</p>
+        <span id="finalCgpa" class="cgpa-value">0.00</span>
+
+        <!-- SHARE VIA EMAIL -->
+        <div class="share-section">
+          <p class="share-label">📧 Share Result via Email</p>
+          <div class="share-row">
+            <input type="email" id="recipientEmail" placeholder="Recipient's email address" autocomplete="email" />
+            <button class="mail-btn" onclick="shareViaEmail()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+              </svg>
+              Send Email
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- BACK TO HOME -->
+    <div style="text-align:center; margin-top:2.5rem;">
+      <a href="../calculator/landing.html" class="nav-btn">← Back to Home</a>
+    </div>
+
+  </div>
+
+  <script src="cgpa-script.js"></script>
+</body>
+
+</html>

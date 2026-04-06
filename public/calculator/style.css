@@ -1,0 +1,319 @@
+/* =======================
+   ROOT TOKENS
+   ======================= */
+:root {
+  --bg-main: #f4efe8;
+  --bg-card: #faf8f4;
+  --brown-dark: #3b2f2f;
+  --brown-main: #7a4e2d;
+  --brown-muted: #6b4a34;
+  --brown-light: #8b5e3c;
+  --border-light: #dccfc2;
+  --border-soft: #eee4da;
+  --text-muted: #5f5248;
+
+  --radius-lg: 16px;
+  --radius-md: 10px;
+
+  --shadow-soft: 0 6px 18px rgba(90, 62, 43, 0.08);
+  --shadow-card: 0 10px 25px rgba(90, 62, 43, 0.08);
+}
+
+/* =======================
+   RESET & BASE
+   ======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg-main);
+  color: var(--brown-dark);
+  line-height: 1.6;
+}
+
+/* =======================
+   LAYOUT
+   ======================= */
+.container {
+  max-width: 900px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+}
+
+/* =======================
+   TYPOGRAPHY
+   ======================= */
+h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--brown-muted);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--brown-muted);
+  margin-bottom: 0.8rem;
+}
+
+p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* =======================
+   CARDS
+   ======================= */
+.card,
+.summary-card,
+.table-card,
+.result-card,
+.result {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.card,
+.summary-card {
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.table-card {
+  padding: 1.5rem;
+}
+
+.result-card {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  align-items: center;
+}
+
+/* =======================
+   FORMS
+   ======================= */
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.2rem;
+}
+
+input,
+select {
+  background: var(--bg-card);
+  border: 1px solid #d6c4b5;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  color: var(--brown-dark);
+  transition: border 0.25s ease, box-shadow 0.25s ease;
+}
+
+input::placeholder {
+  color: #9a8474;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--brown-light);
+  box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.15);
+  outline: none;
+}
+
+/* =======================
+   BUTTONS
+   ======================= */
+button,
+.primary-btn {
+  background: var(--brown-main);
+  color: var(--bg-main);
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+button:hover,
+.primary-btn:hover {
+  background: #684027;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* =======================
+   TABLE
+   ======================= */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+th,
+td {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+th {
+  background: #f1e7db;
+  color: var(--brown-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-light);
+}
+
+td {
+  border-bottom: 1px solid var(--border-soft);
+}
+
+tbody tr:hover {
+  background: #f6efe7;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Alignment */
+th:nth-child(1),
+td:nth-child(1) {
+  text-align: left;
+}
+
+th:nth-child(2),
+th:nth-child(3),
+td:nth-child(2),
+td:nth-child(3) {
+  text-align: center;
+  width: 100px;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+  width: 80px;
+  text-align: center;
+}
+
+/* Table action button */
+table button {
+  background: transparent;
+  color: var(--brown-light);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+table button:hover {
+  background: rgba(139, 94, 60, 0.15);
+}
+
+/* =======================
+   RESULTS
+   ======================= */
+.result span,
+.result-card span,
+.cgpa-value {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 3rem;
+  font-weight: 600;
+  color: var(--brown-main);
+}
+
+/* =======================
+   NAVIGATION
+   ======================= */
+.nav-btn {
+  display: inline-block;
+  margin-top: 2rem;
+  text-decoration: none;
+  font-size: 0.9rem;
+  color: var(--brown-main);
+}
+
+.nav-btn:hover {
+  color: #5a3e2b;
+}
+
+/* =======================
+   LAYOUT: SIDE BY SIDE
+   ======================= */
+.data-layout {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 900px) {
+  .result-card {
+    position: sticky;
+    top: 120px;
+  }
+}
+
+/* =======================
+   ANIMATIONS
+   ======================= */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =======================
+   RESPONSIVE
+   ======================= */
+@media (max-width: 800px) {
+  .data-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .result span {
+    font-size: 2.3rem;
+  }
+
+  th,
+  td {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+
+  th:nth-child(4),
+  td:nth-child(4) {
+    width: 60px;
+  }
+}
